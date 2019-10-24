@@ -79,7 +79,7 @@ public class Gauntlet {
         try (final Response response = HTTP.newCall(request).execute()) {
             if (!response.isSuccessful()) throw new IOException("not a 200 OK: " + response.code());
             final String header = response.header("Content-Type");
-            if (!header.startsWith("text/html")) throw new IOException("Unknown content-type: " + header);
+            if (header == null || !header.startsWith("text/html")) throw new IOException("unknown content-type: " + header);
             final ResponseBody body = response.body();
             if (body == null) throw new IOException("no body");
 
