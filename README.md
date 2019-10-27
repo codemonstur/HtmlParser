@@ -25,6 +25,13 @@ I'll need to get some blobs of HTML and start running tests.
 Not yet.
 But feel free to experiment if you are bold.
 
+Really bold.
+
+Nullpointers (we can totally close tags that don't exist), stackoverflows (closing tags is for pussies) it's been a real joy to debug so far.
+Real world HTML is really really messy.
+
+Stats show just 3.7% successfully parses.
+
 ## How to get
 
 Eventually I'll put it on maven central.

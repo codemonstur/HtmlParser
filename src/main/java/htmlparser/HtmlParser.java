@@ -1,12 +1,13 @@
 package htmlparser;
 
+import htmlparser.core.Document;
 import htmlparser.core.Tag;
 import htmlparser.utils.Interfaces.CheckedIterator;
 
 import java.io.*;
 import java.nio.charset.Charset;
 
-import static htmlparser.core.DomBuilder.toHtmlDom;
+import static htmlparser.core.DomBuilder.toHtmlDocument;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class HtmlParser {
@@ -41,17 +42,31 @@ public final class HtmlParser {
         try {
             return fromHtml(new ByteArrayInputStream(input.getBytes(charset)));
         } catch (IOException e) {
+            e.printStackTrace();
             // Not possible
             return null;
         }
     }
     public Tag fromHtml(final InputStream stream) throws IOException {
-        return toHtmlDom(new InputStreamReader(stream, charset));
+        return toHtmlDocument(new InputStreamReader(stream, charset));
     }
     public String toHtml(final Tag node) {
+        if (node instanceof Document) {
+            final StringBuilder builder = new StringBuilder();
+            for (final Tag tag : node.children) {
+                builder.append(writer.toHtml(tag));
+            }
+            return builder.toString();
+        }
         return writer.toHtml(node);
     }
     public void toHtml(final Tag node, final Writer out) throws IOException {
+        if (node instanceof Document) {
+            for (final Tag tag : node.children) {
+                out.append(writer.toHtml(tag));
+            }
+            return;
+        }
         writer.toHtml(node, out);
     }
     public CheckedIterator<String> iterateHtml(final InputStream in) {

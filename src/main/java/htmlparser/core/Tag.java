@@ -2,18 +2,23 @@ package htmlparser.core;
 
 import java.util.*;
 
+import static htmlparser.utils.HTML.escapeHtml;
+
 public class Tag {
 
     public Tag parent;
     public String name;
-    public Map<String, String> attributes;
+    public String closingName;
+    public Map<String, AttributeValue> attributes;
     public List<Tag> children;
+    public boolean isSelfClosing;
+    public boolean isAutoClosing;
 
     public Tag(final Tag parent, final String name,
-               final Map<String, String> attributes) {
+               final Map<String, AttributeValue> attributes) {
         this(parent, name, attributes, new LinkedList<>());
     }
-    public Tag(final Tag parent, final String name, final Map<String, String> attributes,
+    public Tag(final Tag parent, final String name, final Map<String, AttributeValue> attributes,
                final List<Tag> children) {
         this.parent = parent;
         this.name = name;
@@ -50,24 +55,6 @@ public class Tag {
         return num;
     }
 
-    public String getText() {
-        final StringBuilder builder = new StringBuilder();
-        for (final Tag child : children) {
-            if (child instanceof HtmlTextElement)
-                builder.append(((HtmlTextElement)child).text);
-        }
-        return builder.length() == 0 ? null : builder.toString();
-    }
-
-    public boolean hasNonTextChildren() {
-        if (children.isEmpty()) return false;
-        for (final Tag e : children) {
-            if (e instanceof HtmlTextElement) continue;
-            return true;
-        }
-        return false;
-    }
-
     public static Tag element(final String name) {
         return new Tag(null, name, new HashMap<>(), new ArrayList<>());
     }
@@ -76,12 +63,12 @@ public class Tag {
         child.parent = this;
         return this;
     }
-    public Tag attribute(final String name, final String value) {
+    public Tag attribute(final String name, final AttributeValue value) {
         attributes.put(name, value);
         return this;
     }
     public Tag text(final String text) {
-        this.children.add(new HtmlTextElement(this, text));
+        this.children.add(new HtmlTextElement(this, text, escapeHtml(text, true)));
         return this;
     }
 

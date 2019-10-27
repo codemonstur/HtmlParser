@@ -38,7 +38,7 @@ public interface HtmlIterator {
 
             public Tag next() throws Exception {
                 final String html = readUntilCurrentTagIsClosed(in);
-                return DomBuilder.toHtmlDom(new InputStreamReader(new ByteArrayInputStream(html.getBytes(charset)), charset));
+                return DomBuilder.toHtmlDocument(new InputStreamReader(new ByteArrayInputStream(html.getBytes(charset)), charset));
             }
         };
     }

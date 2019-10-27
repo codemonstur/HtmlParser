@@ -29,3 +29,7 @@ deploy: build
 	@hub release create -d -a target/$(NAME)-$(VERSION).jar -a target/$(NAME)-$(VERSION)-javadoc.jar -a target/$(NAME)-$(VERSION)-sources.jar -F src/docs/releases/release-$(VERSION).txt $(NAME)-$(VERSION)
 	@echo "[$(NAME)] Uploading to maven central"
 	@mvn clean deploy -P release
+
+diff:
+	@echo "Diff for domain $(DOMAIN)"
+	@diff src/test/data/result/$(DOMAIN).html src/test/data/source/$(DOMAIN).html

@@ -1,14 +1,21 @@
 package htmlparser.utils;
 
+import htmlparser.core.AttributeValue;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import static htmlparser.utils.Constants.*;
 import static htmlparser.utils.Functions.isNullOrEmpty;
 
 public enum HTML {;
+
+    public static final Set<String> AUTO_CLOSING_TAGS = Set.of("!DOCTYPE", "area", "base", "br",
+        "col", "command", "embed", "hr", "img", "input", "keygen", "link", "meta", "param",
+        "source", "track", "wbr");
 
     public static String escapeHtml(final String str, final boolean encodeUTF8) {
         if (isNullOrEmpty(str)) return str;
@@ -65,7 +72,11 @@ public enum HTML {;
                     result.append(toChar(text.substring(i+2, index)));
                     i = index+1;
                 }
-                else i++;
+                else {
+                    // If we get here the website failed to properly encode the & symbol
+                    result.append("&");
+                    i++;
+                }
             }
         }
         return result.toString();
@@ -75,18 +86,23 @@ public enum HTML {;
         return (char) Integer.parseInt(substring);
     }
 
-    public static String attributesToHtml(final Map<String, String> map, final boolean shouldEncodeUTF8) {
+    public static String attributesToHtml(final Map<String, AttributeValue> map) {
         if (map == null || map.isEmpty()) return EMPTY;
 
         final StringBuilder builder = new StringBuilder();
-        for (final Entry<String, String> entry : map.entrySet()) {
-            addAttribute(builder, entry.getKey(), escapeHtml(entry.getValue(), shouldEncodeUTF8));
+        for (final Entry<String, AttributeValue> entry : map.entrySet()) {
+            final AttributeValue value = entry.getValue();
+            if (value == null) addAttribute(builder, entry.getKey());
+            else addAttribute(builder, entry.getKey(), value.getQuote(), value.original);
         }
         return builder.toString();
     }
 
-    public static void addAttribute(final StringBuilder builder, final String name, final String value) {
-        builder.append(SPACE).append(name).append(EQUALS).append(DOUBLE_QUOTE).append(value).append(DOUBLE_QUOTE);
+    public static void addAttribute(final StringBuilder builder, final String name) {
+        builder.append(SPACE).append(name);
+    }
+    public static void addAttribute(final StringBuilder builder, final String name, final String quote, final String value) {
+        builder.append(SPACE).append(name).append(EQUALS).append(quote).append(value).append(quote);
     }
 
     public static void writeTag(final Writer writer, final String name, final String text) throws IOException {

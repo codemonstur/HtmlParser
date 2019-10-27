@@ -26,7 +26,7 @@ public enum HtmlParse {;
             if (data == end) break;
             chars.add((char) data);
         }
-        if (data == -1) return null;
+        if (data == -1 && chars.isEmpty()) return null;
 
         char[] value = new char[chars.size()];
         int i = 0;
@@ -46,6 +46,15 @@ public enum HtmlParse {;
         for (int i = offset; i < input.length(); i++) {
             final char at = input.charAt(i);
             if (at == ' ' || at == '\t' || at == '\n' || at == '\r') return i;
+        }
+        return -1;
+    }
+    public static int indexOfEndOfName(final String input, final int offset) {
+        for (int i = offset; i < input.length(); i++) {
+            final char at = input.charAt(i);
+            if ( at == ' ' || at == '\t' || at == '\n'
+              || at == '\r' || at == '=' || at == '>'
+              || at == '/' || at == '\'' || at == '"') return i;
         }
         return -1;
     }

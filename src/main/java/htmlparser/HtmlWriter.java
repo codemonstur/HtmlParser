@@ -1,5 +1,6 @@
 package htmlparser;
 
+import htmlparser.core.IEComment;
 import htmlparser.core.HtmlTextElement;
 import htmlparser.core.Tag;
 import htmlparser.utils.Interfaces.ParserConfiguration;
@@ -26,32 +27,47 @@ public interface HtmlWriter extends ParserConfiguration {
         toHtml(node, writer, "");
     }
     default void toHtml(final Tag node, final Writer writer, final String indent) throws IOException {
-        final String text = node.getText();
-        if (text == null && node.children.isEmpty()) {
+        if (node instanceof HtmlTextElement) {
             writeIndent(writer, indent);
-            writeSelfClosingTag(writer, node.name, attributesToHtml(node.attributes, shouldEncodeUTF8()));
+            String text = ((HtmlTextElement) node).original;
+            if (shouldPrettyPrint()) text = text.trim();
+            writer.append(text);
             writeNewLine(writer);
-        } else if (!node.hasNonTextChildren() && node.attributes.isEmpty()) {
+            return;
+        }
+        if (node instanceof IEComment) {
             writeIndent(writer, indent);
-            writeOpeningAndClosingTag(writer, node.name, text);
-            writeNewLine(writer);
-        } else {
-            writeIndent(writer, indent);
-            writeOpeningTag(writer, node.name, attributesToHtml(node.attributes, shouldEncodeUTF8()));
+            String content = ((IEComment) node).content;
+            writeOpeningTag(writer, node.name+content);
             writeNewLine(writer);
             for (final Tag child : node.children) {
-                if (child instanceof HtmlTextElement) continue;
-
                 toHtml(child, writer, INDENT+indent);
             }
-            if (text != null) {
-                writeIndent(writer, indent);
-                writer.append(escapeHtml(text, shouldEncodeUTF8()));
-            }
-            writeIndent(writer, indent);
-            writeClosingTag(writer, node.name);
-            writeNewLine(writer);
+            writeOpeningTag(writer, node.closingName);
+            return;
         }
+
+        if (node.isSelfClosing) {
+            writeIndent(writer, indent);
+            writeSelfClosingTag(writer, node.name, attributesToHtml(node.attributes));
+            writeNewLine(writer);
+            return;
+        }
+        if (node.isAutoClosing) {
+            writeIndent(writer, indent);
+            writeOpeningTag(writer, node.name, attributesToHtml(node.attributes));
+            writeNewLine(writer);
+            return;
+        }
+        writeIndent(writer, indent);
+        writeOpeningTag(writer, node.name, attributesToHtml(node.attributes));
+        writeNewLine(writer);
+        for (final Tag child : node.children) {
+            toHtml(child, writer, INDENT+indent);
+        }
+        if (node.closingName != null)
+            writeClosingTag(writer, node.closingName);
+        writeNewLine(writer);
     }
 
     default void writeIndent(final Writer writer, final String indent) throws IOException {

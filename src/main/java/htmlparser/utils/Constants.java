@@ -14,7 +14,7 @@ public enum Constants {;
         CHAR_AMPERSAND = '&';
 
     public static final char
-            HTML_TAG_START = CHAR_LESS_THAN,
+        HTML_TAG_START = CHAR_LESS_THAN,
         HTML_TAG_END = CHAR_GREATER_THAN,
         HTML_SELF_CLOSING = CHAR_FORWARD_SLASH,
         HTML_PROLOG = CHAR_QUESTION_MARK;
@@ -29,6 +29,7 @@ public enum Constants {;
         EQUALS = "=",
         HASH = "#",
         SEMICOLON = ";",
+        SINGLE_QUOTE = "'",
         DOUBLE_QUOTE = "\"",
         FORWARD_SLASH = "/",
         NEW_LINE = "\n";
