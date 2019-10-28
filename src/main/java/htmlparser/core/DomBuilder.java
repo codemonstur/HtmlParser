@@ -32,10 +32,6 @@ public class DomBuilder implements EventParser {
     public void someText(final String original, final String decoded) {
         if (original == null || original.isEmpty()) return;
 
-        if (this.current == null) {
-            System.out.println("Maybe here");
-        }
-
         this.current.children.add(new HtmlTextElement(this.current, original, decoded));
     }
 
