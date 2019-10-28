@@ -132,6 +132,9 @@
                         <goals><goal>jar</goal></goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <detectJavaApiLink>false</detectJavaApiLink>
+                </configuration>
             </plugin>
 
             <plugin>
