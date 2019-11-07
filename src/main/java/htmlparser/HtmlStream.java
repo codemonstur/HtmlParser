@@ -28,7 +28,13 @@ public interface HtmlStream {
             }
 
             if (str.charAt(0) == CHAR_FORWARD_SLASH) {
-                parser.endNode(getNameOfTag(str.substring(1)));
+                final String name = getNameOfTag(str.substring(1));
+                if (AUTO_CLOSING_TAGS.contains(name)) {
+                    parser.startNode(FORWARD_SLASH+name, new HashMap<>());
+                    parser.endAutoClosing();
+                } else {
+                    parser.endNode(name);
+                }
             }
             else {
                 final String name = getNameOfTag(str);

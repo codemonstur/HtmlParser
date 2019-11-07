@@ -4,7 +4,10 @@ import htmlparser.HtmlStream;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Map;
+
+import static htmlparser.utils.Constants.FORWARD_SLASH;
 
 public class DomBuilder implements EventParser {
     private Tag root = new Document();
@@ -15,11 +18,35 @@ public class DomBuilder implements EventParser {
         this.current.appendChild(tmp);
         this.current = tmp;
     }
+    public void startIEComment(final String name, final String content) {
+        final IEComment tmp = new IEComment(this.current, name, content);
+        this.current.appendChild(tmp);
+        this.current = tmp;
+    }
 
     public void endNode(final String name) {
+        if (this.current instanceof Document) {
+            final Document document = (Document) this.current;
+            final Tag newTag = new Tag(this.current, FORWARD_SLASH+ name, new HashMap<>());
+            newTag.isAutoClosing = true;
+            document.endTags.add(newTag);
+            return;
+        }
         this.current.closingName = name;
         this.current = this.current.parent;
     }
+    public void endIEComment(final String name) {
+        if (this.current instanceof Document) {
+            final Document document = (Document) this.current;
+            final Tag newTag = new Tag(this.current, FORWARD_SLASH+ name, new HashMap<>());
+            newTag.isAutoClosing = true;
+            document.endTags.add(newTag);
+            return;
+        }
+        this.current.closingName = name;
+        this.current = this.current.parent;
+    }
+
     public void endSelfClosing() {
         this.current.isSelfClosing = true;
         this.current = this.current.parent;
@@ -35,15 +62,6 @@ public class DomBuilder implements EventParser {
         this.current.children.add(new HtmlTextElement(this.current, original, decoded));
     }
 
-    public void startIEComment(final String name, final String content) {
-        final IEComment tmp = new IEComment(this.current, name, content);
-        this.current.appendChild(tmp);
-        this.current = tmp;
-    }
-    public void endIEComment(final String name) {
-        this.current.closingName = name;
-        this.current = this.current.parent;
-    }
 
     public Tag getRoot() {
         return this.root;

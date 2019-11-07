@@ -69,7 +69,10 @@ public enum HTML {;
                     i += 4;
                 } else if (text.startsWith(ENCODED_UTF8, i)) {
                     final int index = text.indexOf(';', i);
-                    result.append(toChar(text.substring(i+2, index)));
+                    char value = text.charAt(i+2) == 'x'
+                               ? hexToChar(text.substring(i+3, index))
+                               : decToChar(text.substring(i+2, index));
+                    result.append(value);
                     i = index+1;
                 }
                 else {
@@ -82,8 +85,11 @@ public enum HTML {;
         return result.toString();
     }
 
-    private static char toChar(final String substring) {
+    private static char decToChar(final String substring) {
         return (char) Integer.parseInt(substring);
+    }
+    private static char hexToChar(final String hex) {
+        return (char) Integer.parseInt(hex, 16);
     }
 
     public static String attributesToHtml(final Map<String, AttributeValue> map) {
