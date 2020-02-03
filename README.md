@@ -2,18 +2,13 @@
 [![Build Status](https://travis-ci.org/codemonstur/htmlparser.svg?branch=master)](https://travis-ci.org/codemonstur/htmlparser)
 [![GitHub Release](https://img.shields.io/github/release/codemonstur/htmlparser.svg)](https://github.com/codemonstur/htmlparser/releases) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.codemonstur/htmlparser/badge.svg)](http://mvnrepository.com/artifact/com.github.codemonstur/htmlparser)
-[![Maintainability](https://api.codeclimate.com/v1/badges/63924c44946973cb37f8/maintainability)](https://codeclimate.com/github/codemonstur/htmlparser/maintainability)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
-[![Coverage Status](https://coveralls.io/repos/github/codemonstur/htmlparser/badge.svg?branch=master)](https://coveralls.io/github/codemonstur/htmlparser?branch=master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/813d8482256b4ed88e2ff1018d53f06e)](https://www.codacy.com/app/codemonstur/htmlparser)
-[![Sputnik](https://sputnik.ci/conf/badge)](https://sputnik.ci/app#/builds/codemonstur/htmlparser)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
 # HtmlParser
 
 A project for parsing HTML.
 Currently the code doesn't work.
-All I did was copy over the SimplXml project code and delete everything having to do with serialization.
+All I did was copy over the SimpleXml project code and delete everything having to do with serialization.
 And then I renamed XML to HTML.
 
 Real world HTML is more messy.
@@ -26,7 +21,7 @@ But feel free to experiment if you are bold.
 
 Really bold.
 
-Nullpointers (we can totally close tags that don't exist), stackoverflows (closing tags is for pussies) it's been a real joy to debug so far.
+NPE (we can totally close tags that don't exist), stackoverflows (closing tags is for pussies) it's been a real joy to debug so far.
 Real world HTML is really really messy.
 
 Stats show just 3.7% successfully parses.
